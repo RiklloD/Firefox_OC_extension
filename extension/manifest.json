@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "OpenCode Browser Agent",
+  "version": "0.1.0",
+  "description": "AI coding assistant in your browser - leverage OpenCode's local AI capabilities directly from Firefox",
+  "author": "Rikllo",
+  "homepage_url": "https://github.com/code-yeongyu/opencode",
+  "icons": {
+    "48": "icons/icon-48.svg",
+    "96": "icons/icon-96.svg"
+  },
+  "action": {
+    "default_title": "OpenCode Agent",
+    "default_icon": {
+      "48": "icons/icon-48.svg",
+      "96": "icons/icon-96.svg"
+    }
+  },
+  "sidebar_action": {
+    "default_title": "OpenCode Agent",
+    "default_panel": "sidebar.html"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "permissions": [
+    "nativeMessaging",
+    "activeTab",
+    "tabs",
+    "idle"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:4096/*"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "opencode-browser-agent@opencode.dev",
+      "strict_min_version": "109.0"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": []
+    }
+  ],
+  "commands": {
+    "toggle-sidebar": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+O",
+        "mac": "MacCtrl+Shift+O"
+      },
+      "description": "Toggle OpenCode sidebar"
+    }
+  }
+}

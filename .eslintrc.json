@@ -1,0 +1,38 @@
+{
+  "env": {
+    "browser": true,
+    "es2022": true,
+    "webextensions": true
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-undef": "warn",
+    "no-console": "off",
+    "no-empty": "warn",
+    "no-async-promise-executor": "warn",
+    "prefer-const": "error",
+    "no-var": "error",
+    "eqeqeq": ["error", "always"],
+    "curly": ["error", "all"],
+    "no-useless-escape": "warn",
+    "no-prototype-builtins": "warn"
+  },
+  "globals": {
+    "browser": "readonly",
+    "browser.runtime": "readonly",
+    "browser.tabs": "readonly",
+    "browser.idle": "readonly",
+    "navigator": "readonly"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "*.min.js"
+  ]
+}

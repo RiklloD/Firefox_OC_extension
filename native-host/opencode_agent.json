@@ -1,0 +1,9 @@
+{
+  "name": "opencode_agent",
+  "description": "OpenCode Browser Agent - Native messaging bridge for Firefox extension",
+  "path": "C:\\dev\\firefox_opencode_extension\\native-host\\opencode_agent.bat",
+  "type": "stdio",
+  "allowed_extensions": [
+    "opencode-browser-agent@opencode.dev"
+  ]
+}
