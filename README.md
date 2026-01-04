@@ -5,56 +5,32 @@
 </p>
 
 <p align="center">
-  <strong>AI Coding Assistant in Your Browser</strong>
+  <strong>Browser Automation Plugin for OpenCode</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/code-yeongyu/opencode">OpenCode</a> • 
-  <a href="#features">Features</a> • 
-  <a href="#installation">Installation</a> • 
-  <a href="#usage">Usage</a> • 
-  <a href="#architecture">Architecture</a>
+  <a href="https://github.com/code-yeongyu/opencode-browser-agent">GitHub</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#firefox-extension">Firefox Extension</a>
 </p>
 
 ---
 
 ## Overview
 
-OpenCode Browser Agent is a Firefox extension that brings OpenCode's powerful AI coding capabilities directly into your browser. Just like Comet browser provides agentic automation, this extension creates a seamless bridge between web browsing and AI-powered code generation.
+OpenCode Browser Agent is a bun package that adds browser automation capabilities to OpenCode. It provides:
 
-### Why OpenCode Browser Agent?
+- **browser-agent**: An AI agent specialized for web browsing tasks
+- **MCP Server**: Model Context Protocol server for browser automation (Playwright)
+- **Context Injection**: Automatic injection of browser context (URL, title) from Firefox extension
 
-- **Local AI Processing**: All code generation happens locally on your machine—no data sent to external servers
-- **Full Context Awareness**: OpenCode understands the current web page you're viewing
-- **Privacy First**: Your browsing data and code stay on your machine
-- **Unlimited Usage**: No API limits, no subscription tiers
-- **Works Offline**: After initial setup, functions without internet connectivity
+### Key Features
 
----
-
-## Features
-
-### 🔗 Seamless Browser Integration
-- One-click access to OpenCode from Firefox toolbar
-- Automatic capture of current page URL and title
-- Context-aware AI responses based on your browsing
-
-### 🤖 Powerful AI Assistance
-- Generate code snippets from documentation pages
-- Explain and analyze code on GitHub
-- Get solutions for Stack Overflow errors
-- Refactor and improve code with AI guidance
-
-### 🛡️ Privacy & Security
-- All processing happens locally with your own API keys
-- No external servers involved in data processing
-- You control your LLM provider (OpenAI, Anthropic, Ollama, etc.)
-
-### 🔧 Developer-Friendly
-- Modern popup UI with syntax highlighting
-- Copy responses with one click
-- Supports multiple LLM backends
-- Extensible plugin system
+- ✅ **Non-conflicting**: Uses unique names to avoid conflicts with existing OpenCode setup
+- ✅ **Self-contained**: Bundles everything (MCP server, plugins, agents)
+- ✅ **Plugin-based**: Uses OpenCode's plugin system properly
+- ✅ **Firefox Integration**: Works with the Firefox extension for browser context
 
 ---
 
@@ -62,148 +38,70 @@ OpenCode Browser Agent is a Firefox extension that brings OpenCode's powerful AI
 
 ### Prerequisites
 
-1. **Firefox** (version 109.0 or higher)
-2. **OpenCode** installed locally
+1. **OpenCode** installed locally
    ```bash
    bun add -g opencode
    ```
-3. **Python 3** with requests library
+
+2. **Bun** 1.0 or higher
    ```bash
-   pip install requests
+   curl -fsSL https://bun.sh/install | bash
    ```
 
-### Step 1: Install Native Messaging Manifest
+3. **Playwright** browsers (for MCP server)
+   ```bash
+   bun playwright install
+   ```
 
-#### Linux/macOS
+### Install the Package
+
 ```bash
-chmod +x install.sh
-./install.sh
+# Add to your project
+bun add opencode-browser-agent
+
+# Or install globally
+bun add -g opencode-browser-agent
 ```
 
-#### Windows
-```batch
-install.bat
-```
+### Run Installation Script
 
-### Step 2: Load Extension in Firefox
-
-#### Option A: Temporary Installation (Development)
-1. Open Firefox and navigate to `about:debugging`
-2. Click **This Firefox** in the sidebar
-3. Click **Load Temporary Add-on**
-4. Select the `manifest.json` file in the `extension/` directory
-
-#### Option B: Using web-ext (Recommended for Development)
 ```bash
-bun add -g web-ext
-cd extension
-web-ext run
-```
+# From your project directory
+npx opencode-browser-agent install
 
-#### Option C: Permanent Installation
-1. Package the extension: `cd extension && web-ext build`
-2. Go to `about:addons`
-3. Click the gear icon → **Install Add-on From File**
-4. Select the generated `.zip` file`
+# Or with bun run
+bun run node_modules/.bin/opencode-browser-agent install
 
-### Step 3: Copy Browser Context Plugin (Optional)
-
-For enhanced browser context awareness, copy the plugin to OpenCode's config:
-
-#### Linux/macOS
-```bash
-cp opencode-config/plugin/opencode-browser-context.js ~/.config/opencode/plugin/
-```
-
-#### Windows
-```batch
-copy opencode-config\plugin\opencode-browser-context.js %USERPROFILE%\.config\opencode\plugin\
+# Or directly
+node node_modules/opencode-browser-agent/bin/install.js
 ```
 
 ---
 
-## WebAgency Edition
+## Usage
 
-This extension includes a **specialized WebAgent** for web browsing tasks, perfect for webagency workflows.
+### With Firefox Extension
 
-### WebAgent Capabilities
+1. **Load the Firefox Extension**
+   - Go to `about:debugging`
+   - Click "Load Temporary Add-on"
+   - Select `extension/manifest.json` from this repository
 
-- **Research**: Search and analyze multiple pages (5-10+ pages in one task)
-- **Automation**: Click, fill forms, navigate, scroll
-- **Extraction**: Extract structured data, tables, forms
-- **Analysis**: Take screenshots, analyze page content
+2. **Use in OpenCode**
+   - Start OpenCode with the browser-agent:
+     ```bash
+     opencode --agent browser-agent
+     ```
+   - Or select "browser-agent" from the agent list
 
-### WebAgent Setup
+3. **Test**
+   - Navigate to a webpage in Firefox
+   - Click the extension icon
+   - Ask: "What's the title of this page?"
 
-#### Step 1: Configure MCP Server (Browser Automation)
+### Available Tools
 
-Install the Playwright MCP server with Bun:
-
-```bash
-cd mcp-servers/webagency-browser-bun
-bun install
-```
-
-#### Step 2: Add MCP to OpenCode Config
-
-Create or edit `~/.config/opencode/opencode.json`:
-
-```json
-{
-  "mcp": {
-    "servers": {
-      "webagency-playwright": {
-        "command": "bun",
-        "args": ["C:\\dev\\firefox opencode extension\\mcp-servers\\webagency-browser-bun\\index.ts"],
-        "disabled": false
-      }
-    }
-  }
-}
-```
-
-**Note**: Update the path to match your installation directory.
-
-#### Step 3: Create WebAgent Configuration
-
-Create `~/.config/opencode/agents/webagent.json`:
-
-```json
-{
-  "name": "webagent",
-  "description": "WebAgency browser automation agent",
-  "systemPrompt": "You are WebAgent, specialized in web browsing and webagency tasks.\n\nYour strengths:\n- Searching and researching across multiple pages\n- Filling forms and completing web actions\n- Extracting structured data from websites\n- Taking actions on behalf of the user\n- Analyzing page content and structure\n\nWorkflow for research tasks:\n1. Navigate to relevant pages\n2. Extract key information\n3. Synthesize findings\n4. Provide actionable insights\n\nAlways confirm before taking irreversible actions (form submissions, purchases, etc.)",
-  "model": "gpt-4o",
-  "temperature": 0.7,
-  "allowedTools": [
-    "mcp__webagency-playwright*",
-    "context",
-    "read",
-    "grep"
-  ],
-  "forbiddenTools": [
-    "shell_execute",
-    "file_edit",
-    "file_write",
-    "git_commit",
-    "git_push"
-  ]
-}
-```
-
-#### Step 4: Install WebAgency Context Plugin
-
-Copy the WebAgency plugin to OpenCode:
-
-```bash
-# Linux/macOS
-cp opencode-config/plugin/webagency-context.js ~/.config/opencode/plugin/
-
-# Windows
-copy opencode-config\plugin\webagency-context.js %USERPROFILE%\.config\opencode\plugin\
-```
-
-### Available MCP Tools
+The browser-agent has access to these MCP tools:
 
 | Tool | Description | Example |
 |------|-------------|---------|
@@ -215,200 +113,197 @@ copy opencode-config\plugin\webagency-context.js %USERPROFILE%\.config\opencode\
 | `screenshot` | Take page screenshot | `screenshot({filename: "page.png"})` |
 | `get_html` | Get full HTML | `get_html({})` |
 | `scroll` | Scroll page | `scroll({direction: "down"})` |
+| `wait` | Wait seconds | `wait({seconds: 5})` |
+| `get_page_info` | Get page info | `get_page_info({})` |
 | `search` | Search page text | `search({text: "pricing"})` |
-| `get_page_info` | Get current page info | `get_page_info({})` |
-
-### Example WebAgent Queries
-
-- "Search for 5 competitor websites and extract their pricing"
-- "Fill this form with: name=John, email=john@example.com"
-- "Navigate to example.com and analyze the pricing structure"
-- "Click through the navigation and find all service pages"
-- "Extract all contact information from these 10 pages"
-
----
-
-## Usage
-
-1. **Click the extension icon** in your Firefox toolbar
-2. **Type your query** about the current page or any coding question
-3. **Press Enter** (or click Send) to get AI-powered assistance
-4. **Copy the response** with one click if needed
 
 ### Example Queries
 
-- "Analyze this code structure on GitHub"
-- "Generate a TypeScript client for this API documentation"
-- "Explain this algorithm"
-- "Help me complete this form"
-- "What does this error message mean?"
+- "Search for competitor websites and extract their pricing"
+- "Fill this form with: name=John, email=john@example.com"
+- "Navigate to example.com and analyze the pricing structure"
+- "Click through the navigation and find all service pages"
+- "Extract all contact information from these pages"
+
+---
+
+## Firefox Extension Setup
+
+For full browser context injection, use the Firefox extension from this repository:
+
+### Load Extension (Temporary)
+
+1. Open Firefox and navigate to `about:debugging`
+2. Click **This Firefox** in the sidebar
+3. Click **Load Temporary Add-on**
+4. Select the `manifest.json` file in the `extension/` directory
+
+### Load Extension (Permanent)
+
+```bash
+cd extension
+web-ext build
+```
+
+Then install the generated `.zip` file via `about:addons`.
+
+---
+
+## Configuration
+
+### Customize Agent
+
+Create `~/.config/opencode/browser-agent.json`:
+
+```json
+{
+  "browserAgent": {
+    "model": "openrouter/x-ai/grok-4.1-fast",
+    "temperature": 0.7,
+    "maxTokens": 4096,
+    "allowedTools": [
+      "mcp__opencode-browser-agent__navigate",
+      "mcp__opencode-browser-agent__click",
+      "mcp__opencode-browser-agent__fill",
+      "mcp__opencode-browser-agent__extract",
+      "context",
+      "read",
+      "grep"
+    ],
+    "forbiddenTools": [
+      "shell_execute",
+      "file_edit",
+      "file_write",
+      "git_commit",
+      "git_push"
+    ]
+  }
+}
+```
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `BROWSER_HEADLESS` | Run browser in headless mode | `false` |
 
 ---
 
 ## Architecture
 
-The OpenCode Browser Agent uses a three-tier architecture:
-
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Firefox Extension                      │
-│  ┌─────────┐    ┌──────────────┐    ┌────────────────┐  │
-│  │ Popup   │───▶│ Background   │───▶│ Native Host    │  │
-│  │ UI      │    │ Service      │    │ Connection     │  │
-│  └─────────┘    │ Worker       │    └────────┬───────┘  │
-│                 └──────────────┘             │          │
-└─────────────────────────────────────────────────────────┘
-                                                   │
-                                                   ▼
-                    ┌─────────────────────────────────────┐
-                    │       Native Messaging Host          │
-                    │   Python Bridge (stdin/stdout)       │
-                    │                                     │
-                    │  • Protocol handling                │
-                    │  • Server lifecycle management      │
-                    │  • Error handling                   │
-                    └──────────────────┬──────────────────┘
-                                       │
-                                       ▼
-                    ┌─────────────────────────────────────┐
-                    │       OpenCode Server                │
-                    │   http://127.0.0.1:4096             │
-                    │                                     │
-                    │  • AI processing                    │
-                    │  • Plugin system                    │
-                    │  • Tool execution                   │
-                    └─────────────────────────────────────┘
+opencode-browser-agent/
+├── src/
+│   ├── index.ts              # Main plugin export
+│   ├── agent/
+│   │   └── browser-agent.ts  # Agent configuration
+│   └── context/
+│       └── browser-context.ts # Context injection hooks
+├── mcp-servers/
+│   └── playwright/
+│       ├── index.ts          # MCP server entry point
+│       └── package.json      # MCP server dependencies
+├── bin/
+│   └── install.js            # Installation script
+└── plugin/
+    └── browser-context.js    # Standalone context plugin
 ```
 
-### Components
+### How It Works
 
-#### Extension Layer (`extension/`)
-- **manifest.json**: Extension configuration (Manifest V3)
-- **background.js**: Service worker for native messaging
-- **popup.html/css/js**: User interface
+1. **Plugin Entry Point** (`src/index.ts`):
+   - Exports a default function that OpenCode calls
+   - Injects `browser-agent` into the agent list
+   - Registers `opencode-browser-agent` MCP server
+   - Provides context injection hooks
 
-#### Native Messaging Host (`native-host/`)
-- **opencode_bridge.py**: Python bridge script
-- **opencode_agent.json**: Native messaging manifest
+2. **MCP Server** (`mcp-servers/playwright/index.ts`):
+   - Model Context Protocol server using Playwright
+   - Provides browser automation tools
+   - Communicates via stdin/stdout
 
-#### OpenCode Configuration (`opencode-config/`)
-- **plugin/opencode-browser-context.js**: Browser context plugin
+3. **Browser Context** (`src/context/browser-context.ts`):
+   - Extracts browser context from extension messages
+   - Injects URL, title, etc. into AI context
+   - Triggered by web-related queries
 
 ---
 
 ## Troubleshooting
 
+### MCP Server Not Starting
+
+1. **Check dependencies**:
+   ```bash
+   bun run node_modules/.bin/opencode-browser-agent install
+   ```
+
+2. **Install Playwright browsers**:
+   ```bash
+   bun playwright install
+   ```
+
+3. **Check logs**:
+   ```bash
+   bun run opencode --debug
+   ```
+
 ### Extension Not Connecting
 
-1. **Check OpenCode installation**:
+1. **Verify OpenCode is running**:
    ```bash
    opencode --version
    ```
 
-2. **Verify native messaging manifest**:
-   - Linux/macOS: `~/.mozilla/native-messaging-hosts/opencode_agent.json`
-   - Windows: Registry key at `HKEY_CURRENT_USER\Software\Mozilla\NativeMessagingHosts\opencode_agent`
-
-3. **Check Firefox console** (Ctrl+Shift+J):
+2. **Check Firefox console** (Ctrl+Shift+J):
    - Look for native messaging errors
-   - Verify extension ID matches manifest
 
-### OpenCode Server Issues
-
-1. **Check if port 4096 is available**:
-   ```bash
-   # Linux/macOS
-   lsof -i :4096
-
-   # Windows
-   netstat -ano | findstr :4096
-   ```
-
-2. **Test OpenCode server directly**:
+3. **Verify port 4096**:
    ```bash
    curl http://127.0.0.1:4096/health
    ```
 
-3. **Manual server start**:
-   ```bash
-   opencode serve --port 4096
-   ```
-
 ### Permission Issues
 
-Ensure the native messaging host script has execute permissions:
+Ensure the MCP server has execute permissions:
 ```bash
-chmod +x native-host/opencode_bridge.py
+chmod +x node_modules/opencode-browser-agent/mcp-servers/playwright/index.js
 ```
 
 ---
 
 ## Development
 
-### Project Structure
+### Building
 
-```
-opencode-browser-agent/
-├── extension/
-│   ├── manifest.json          # Firefox extension manifest
-│   ├── background.js          # Background service worker
-│   ├── popup.html             # Popup UI
-│   ├── popup.css              # Popup styles
-│   ├── popup.js               # Popup logic
-│   ├── sidebar.html           # Sidebar UI
-│   ├── sidebar.js             # Sidebar logic
-│   └── icons/                 # Extension icons
-├── native-host/
-│   ├── opencode_bridge.py     # Native messaging bridge
-│   └── opencode_agent.json    # Native manifest
-├── opencode-config/
-│   ├── agents/
-│   │   └── webagent.json      # WebAgent configuration
-│   └── plugin/
-│       ├── opencode-browser-context.js  # Browser context plugin
-│       └── webagency-context.js         # WebAgency plugin
-├── mcp-servers/
-│   └── webagency-browser-bun/   # Bun MCP server
-├── install.sh                   # Base installer
-├── install.bat                  # Base installer (Windows)
-├── install-webagency-bun.sh     # WebAgency setup (Bun, Linux/macOS)
-├── install-webagency-bun.bat    # WebAgency setup (Bun, Windows)
-└── README.md                    # This file
+```bash
+bun run build
 ```
 
 ### Testing
 
 ```bash
-# Test native host standalone
-echo '{"prompt":"test"}' | python native-host/opencode_bridge.py
+# Test MCP server standalone
+echo '{"url":"https://example.com"}' | bun run mcp-servers/playwright/index.ts
+```
 
-# Run extension with web-ext
-cd extension
-web-ext run
+### Publishing
 
-# Lint extension
-web-ext lint
+```bash
+bun publish
 ```
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please read our [contributing guidelines](https://github.com/code-yeongyu/opencode/blob/main/CONTRIBUTING.md) before submitting PRs.
+Contributions are welcome! Please read our contributing guidelines before submitting PRs.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Acknowledgments
-
-- [OpenCode](https://github.com/code-yeongyu/opencode) - The amazing terminal-based AI coding agent
-- [Mozilla Firefox](https://www.mozilla.org/firefox/) - The browser that respects your privacy
-- [WebExtension API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions) - Standard browser extension API
+MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 

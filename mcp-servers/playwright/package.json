@@ -1,0 +1,14 @@
+{
+  "name": "opencode-browser-agent-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for browser automation - bundled with opencode-browser-agent",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "playwright": "^1.40.0"
+  }
+}
